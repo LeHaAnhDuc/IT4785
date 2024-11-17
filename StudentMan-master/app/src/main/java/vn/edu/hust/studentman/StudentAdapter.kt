@@ -29,4 +29,13 @@ class StudentAdapter(val students: List<StudentModel>): RecyclerView.Adapter<Stu
     holder.textStudentName.text = student.studentName
     holder.textStudentId.text = student.studentId
   }
+  private var onEditListener: ((StudentModel) -> Unit)? = null
+  private var onDeleteListener: ((StudentModel) -> Unit)? = null
+  fun setOnEditListener(listener: (StudentModel) -> Unit) {
+    onEditListener = listener
+  }
+
+  fun setOnDeleteListener(listener: (StudentModel) -> Unit) {
+    onDeleteListener = listener
+  }
 }
