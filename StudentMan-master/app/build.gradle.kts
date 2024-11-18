@@ -7,6 +7,7 @@ android {
   namespace = "vn.edu.hust.studentman"
   compileSdk = 35
 
+
   defaultConfig {
     applicationId = "vn.edu.hust.studentman"
     minSdk = 24
@@ -29,6 +30,10 @@ android {
   }
   kotlinOptions {
     jvmTarget = "11"
+  }
+  buildFeatures {
+    dataBinding = true
+    viewBinding = true
   }
 }
 

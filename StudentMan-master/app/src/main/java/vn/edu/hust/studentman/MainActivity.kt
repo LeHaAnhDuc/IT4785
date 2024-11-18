@@ -1,28 +1,26 @@
 package vn.edu.hust.studentman
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Adapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import vn.edu.hust.studentman.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity()
 {
+  var instance: MainActivity? = null
   lateinit var listStudent: MutableList<StudentModel>
   lateinit var studentAdap: StudentAdapter
+  var binding: ActivityMainBinding? = null
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    instance = this
     val students = mutableListOf(
       StudentModel("Nguyễn Văn An", "SV001"),
       StudentModel("Trần Thị Bảo", "SV002"),
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity()
       StudentModel("Lê Văn Vũ", "SV020")
     )
     listStudent = students
-    val studentAdapter = StudentAdapter(students)
+    val studentAdapter = StudentAdapter(this, students)
 
     findViewById<RecyclerView>(R.id.recycler_view_students).run {
       adapter = studentAdapter
@@ -57,20 +55,19 @@ class MainActivity : AppCompatActivity()
       showAddStudentDialog()
     }
   }
-
   fun showAddStudentDialog() {
     val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_student, null)
     val builder = AlertDialog.Builder(this)
     builder.setView(dialogView)
-      .setTitle("Add New Student")
-      .setPositiveButton("Add") { dialog, _ ->
+      .setTitle("Thêm sinh viên mới")
+      .setPositiveButton("Thêm") { dialog, _ ->
         val name = dialogView.findViewById<EditText>(R.id.etName).text.toString()
         val id = dialogView.findViewById<EditText>(R.id.etId).text.toString()
         listStudent.add(StudentModel(name, id))
         studentAdap.notifyDataSetChanged()
         dialog.dismiss()
       }
-      .setNegativeButton("Cancel") { dialog, _ ->
+      .setNegativeButton("Hủy") { dialog, _ ->
         dialog.dismiss()
       }
       .create()
@@ -78,49 +75,51 @@ class MainActivity : AppCompatActivity()
   }
   fun showEditStudentDialog(student: StudentModel) {
     val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_student, null)
-    if (dialogView == null) {
-      Log.e("DialogError", "Failed to inflate dialog layout")
-    }
     dialogView.findViewById<EditText>(R.id.etName).setText(student.studentName)
     dialogView.findViewById<EditText>(R.id.etId).setText(student.studentId)
 
     val builder = AlertDialog.Builder(this)
     builder.setView(dialogView)
-      .setTitle("Edit Student")
-      .setPositiveButton("Update") { dialog, _ ->
+      .setTitle("Chỉnh sửa sinh viên")
+      .setPositiveButton("Lưu") { dialog, _ ->
+        val index = listStudent.indexOf(student)
         val updatedName = dialogView.findViewById<EditText>(R.id.etName).text.toString()
         val updatedId = dialogView.findViewById<EditText>(R.id.etId).text.toString()
-        updateStudent(StudentModel(updatedName, updatedId))
+        updateStudent(index, StudentModel(updatedName, updatedId))
         dialog.dismiss()
       }
-      .setNegativeButton("Cancel") { dialog, _ ->
+      .setNegativeButton("Hủy") { dialog, _ ->
         dialog.dismiss()
       }
       .create()
       .show()
   }
-  fun updateStudent(student: StudentModel){
-
+  fun updateStudent(index: Int, student: StudentModel){
+    listStudent.set(index, student)
+    studentAdap.notifyDataSetChanged()
   }
   fun showDeleteConfirmation(student: StudentModel) {
     AlertDialog.Builder(this)
-      .setTitle("Delete Student")
-      .setMessage("Are you sure you want to delete ${student.studentName}?")
-      .setPositiveButton("Yes") { dialog, _ ->
-        listStudent.remove(student) // Hàm xóa khỏi danh sách
-        showUndoSnackbar(student) // Hiển thị snackbar
+      .setTitle("Xóa sinh viên")
+      .setMessage("Xác nhận muốn xóa sinh viên: ${student.studentName}?")
+      .setPositiveButton("Có") { dialog, _ ->
+        listStudent.remove(student)
+        studentAdap.notifyDataSetChanged()
+        showUndoSnackbar(student)
         dialog.dismiss()
       }
-      .setNegativeButton("No") { dialog, _ ->
+      .setNegativeButton("Không") { dialog, _ ->
         dialog.dismiss()
       }
       .create()
       .show()
   }
   fun showUndoSnackbar(deletedStudent: StudentModel) {
-    Snackbar.make(findViewById(R.id.main), "${deletedStudent.studentName} has been deleted", Snackbar.LENGTH_LONG)
-      .setAction("Undo") {
-        listStudent.add(deletedStudent) // Hàm khôi phục
+    Snackbar.make(findViewById(R.id.main), "${deletedStudent.studentName} đã được xóa", Snackbar.LENGTH_LONG)
+      .setAction("Hoàn tác") {
+        listStudent.add(deletedStudent)
+        listStudent.sortBy { it.studentId }
+        studentAdap.notifyDataSetChanged()
       }
       .show()
   }
