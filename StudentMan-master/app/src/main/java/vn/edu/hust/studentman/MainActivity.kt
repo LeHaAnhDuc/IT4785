@@ -3,6 +3,7 @@ package vn.edu.hust.studentman
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.Adapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -18,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity()
 {
   lateinit var listStudent: MutableList<StudentModel>
+  lateinit var studentAdap: StudentAdapter
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -50,6 +52,10 @@ class MainActivity : AppCompatActivity()
       adapter = studentAdapter
       layoutManager = LinearLayoutManager(this@MainActivity)
     }
+    studentAdap = studentAdapter
+    findViewById<Button>(R.id.btn_add_new).setOnClickListener {
+      showAddStudentDialog()
+    }
   }
 
   fun showAddStudentDialog() {
@@ -61,6 +67,7 @@ class MainActivity : AppCompatActivity()
         val name = dialogView.findViewById<EditText>(R.id.etName).text.toString()
         val id = dialogView.findViewById<EditText>(R.id.etId).text.toString()
         listStudent.add(StudentModel(name, id))
+        studentAdap.notifyDataSetChanged()
         dialog.dismiss()
       }
       .setNegativeButton("Cancel") { dialog, _ ->
