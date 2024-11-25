@@ -1,22 +1,27 @@
 package vn.edu.hust.studentman
 
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
-import vn.edu.hust.studentman.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity()
 {
+  lateinit var  toolbar: MaterialToolbar
   var instance: MainActivity? = null
   lateinit var listStudent: MutableList<StudentModel>
   lateinit var studentAdap: StudentAdapter
-  var binding: ActivityMainBinding? = null
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -50,10 +55,18 @@ class MainActivity : AppCompatActivity()
       adapter = studentAdapter
       layoutManager = LinearLayoutManager(this@MainActivity)
     }
-    studentAdap = studentAdapter
-    findViewById<Button>(R.id.btn_add_new).setOnClickListener {
-      showAddStudentDialog()
+    toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+    toolbar.overflowIcon = AppCompatResources.getDrawable(this, R.drawable.baseline_more_vert_24)
+    toolbar.setOnMenuItemClickListener {
+      item -> when (item.itemId){
+        R.id.AddStudent ->  showAddStudentDialog()
+      }
+      return@setOnMenuItemClickListener true
     }
+    studentAdap = studentAdapter
+    /*findViewById<Button>(R.id.btn_add_new).setOnClickListener {
+
+    }*/
   }
   fun showAddStudentDialog() {
     val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_student, null)
@@ -123,7 +136,9 @@ class MainActivity : AppCompatActivity()
       }
       .show()
   }
-
-
-
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    val inflater: MenuInflater = menuInflater
+    inflater.inflate(R.menu.menu_item_selected, menu)
+    return true
+  }
 }
