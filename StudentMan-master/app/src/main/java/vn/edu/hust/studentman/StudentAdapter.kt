@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import vn.edu.hust.studentman.databinding.LayoutStudentItemBinding
-
 class StudentAdapter(private val context: MainActivity, val students: List<StudentModel>): RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
   class StudentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

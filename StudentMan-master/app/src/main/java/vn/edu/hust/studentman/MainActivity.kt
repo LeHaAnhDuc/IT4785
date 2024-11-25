@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity()
   var instance: MainActivity? = null
   lateinit var listStudent: MutableList<StudentModel>
   lateinit var studentAdap: StudentAdapter
-  var binding: ActivityMainBinding? = null
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -102,13 +101,13 @@ class MainActivity : AppCompatActivity()
     AlertDialog.Builder(this)
       .setTitle("Xóa sinh viên")
       .setMessage("Xác nhận muốn xóa sinh viên: ${student.studentName}?")
-      .setPositiveButton("Có") { dialog, _ ->
+      .setPositiveButton("Đồng ý") { dialog, _ ->
         listStudent.remove(student)
         studentAdap.notifyDataSetChanged()
         showUndoSnackbar(student)
         dialog.dismiss()
       }
-      .setNegativeButton("Không") { dialog, _ ->
+      .setNegativeButton("Hủy") { dialog, _ ->
         dialog.dismiss()
       }
       .create()
@@ -116,7 +115,7 @@ class MainActivity : AppCompatActivity()
   }
   fun showUndoSnackbar(deletedStudent: StudentModel) {
     Snackbar.make(findViewById(R.id.main), "${deletedStudent.studentName} đã được xóa", Snackbar.LENGTH_LONG)
-      .setAction("Hoàn tác") {
+      .setAction("Undo") {
         listStudent.add(deletedStudent)
         listStudent.sortBy { it.studentId }
         studentAdap.notifyDataSetChanged()
