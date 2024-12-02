@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "vn.edu.hust.studentman.app-mergeDebugResources-35:/layout/activity_main.xml",
+        "source": "vn.edu.hust.studentman.app-main-38:/layout/activity_main.xml"
+    },
+    {
+        "merged": "vn.edu.hust.studentman.app-mergeDebugResources-35:/layout/dialog_confirm_delete.xml",
+        "source": "vn.edu.hust.studentman.app-main-38:/layout/dialog_confirm_delete.xml"
+    },
+    {
+        "merged": "vn.edu.hust.studentman.app-mergeDebugResources-35:/layout/layout_student_item.xml",
+        "source": "vn.edu.hust.studentman.app-main-38:/layout/layout_student_item.xml"
+    },
+    {
+        "merged": "vn.edu.hust.studentman.app-mergeDebugResources-35:/layout/dialog_add_student.xml",
+        "source": "vn.edu.hust.studentman.app-main-38:/layout/dialog_add_student.xml"
+    }
+]
